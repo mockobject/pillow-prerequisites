@@ -1,16 +1,28 @@
 # vim: ft=ansible
 ---
 
-- name: Pillow | Install OPENJPEG (JPEG2000) support | Install cmake
+- name: Pillow | Install OPENJPEG (JPEG2000) support | Install cmake for debian distros
   apt: name="cmake"
+  when: ansible_os_family == "Debian"
 
 - name: Pillow | Install OPENJPEG (JPEG2000) support | Download openjpeg sources
   get_url: dest="/usr/src/openjpeg-{{ openjpeg_version }}.tar.gz" url="http://sourceforge.net/projects/openjpeg.mirror/files/{{ openjpeg_version }}/openjpeg-{{ openjpeg_version }}.tar.gz/download"
+  when: ansible_os_family == "Debian"
 
 - name: Pillow | Install OPENJPEG (JPEG2000) support | Unpacking openjpeg tarball
   unarchive: src="/usr/src/openjpeg-{{ openjpeg_version }}.tar.gz" dest="/usr/src/" copy=no
+  when: ansible_os_family == "Debian"
 
 - name: Pillow | Install OPENJPEG (JPEG2000) support | Compile and install openjpeg
   shell: cmake . && make && make install
   args:
     chdir: "/usr/src/openjpeg-{{ openjpeg_version }}"
+  when: ansible_os_family == "Debian"
+
+- name: Pillow | Install OPENJPEG (JPEG2000) support for redhat distros
+  yum: name="openjpeg2"
+  when: ansible_os_family == "RedHat"
+
+- name: Pillow | Install OPENJPEG (JPEG2000) support for redhat distros
+  yum: name="openjpeg2-devel"
+  when: ansible_os_family == "RedHat"

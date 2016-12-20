@@ -1,0 +1,8 @@
+# vim: ft=ansible
+---
+
+# CentOS
+
+pillow_tiff_lib: "libtiff-devel"
+pillow_tcl_lib: "tcl-devel"
+pillow_tk_lib: "tk-devel"

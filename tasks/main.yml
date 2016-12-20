@@ -4,42 +4,82 @@
 - name: Pillow | Load configuration variables
   include_vars: "{{ ansible_distribution_release }}.yml"
 
-- name: Pillow | Run apt-get update
+- name: Pillow | Run apt-get update for debian distros
   apt: update_cache=yes
+  when: ansible_os_family == "Debian"
 
-- name: Pillow | Install Python’s development libraries
+# - name: Pillow | Run apt-get update for redhat distros
+#   yum: 
+#      update_cache: yes
+#      name: *
+#   when: ansible_os_family == "RedHat"
+
+- name: Pillow | Install Python’s development libraries for debian distros
   apt: name="python{{ ansible_python_version|truncate(3, True, '') }}-dev"
+  when: ansible_os_family == "Debian"
 
-- name: Pillow | Install TKINTER support
+- name: Pillow | Install Python’s development libraries for redhat distros
+  yum: name="python-devel"
+  when: ansible_os_family == "RedHat"
+
+- name: Pillow | Install TKINTER support for debian distros
   apt: name="{{ item }}"
   with_items:
     - "python-tk"
     - "{{ pillow_tcl_lib }}"
     - "{{ pillow_tk_lib }}"
-  when: pillow_tkinter
+  when: pillow_tkinter and ansible_os_family == "Debian"
 
-- name: Pillow | Install JPEG support
+- name: Pillow | Install TKINTER support for redhat distros
+  yum: name="{{ item }}"
+  with_items:
+    - "tkinter"
+    - "{{ pillow_tcl_lib }}"
+    - "{{ pillow_tk_lib }}"
+  when: pillow_tkinter and ansible_os_family == "RedHat"
+
+- name: Pillow | Install JPEG support for debian distros
   apt: name="libjpeg8-dev"
-  when: pillow_jpeg
+  when: pillow_jpeg and ansible_os_family == "Debian"
+
+- name: Pillow | Install JPEG support for redhat distros
+  yum: name="libjpeg-devel"
+  when: pillow_jpeg and ansible_os_family == "RedHat"
 
 - include: openjpeg2.0.yml
   when: pillow_openjpeg
 
-- name: Pillow | Install ZLIB (PNG/ZIP) support
+- name: Pillow | Install ZLIB (PNG/ZIP) support for debian distros
   apt: name="zlib1g-dev"
-  when: pillow_png
+  when: pillow_png and ansible_os_family == "Debian"
 
-- name: Pillow | Install LIBTIFF support
+- name: Pillow | Install ZLIB (PNG/ZIP) support for redhat distros
+  yum: name="zlib-devel"
+  when: pillow_png and ansible_os_family == "RedHat"
+
+- name: Pillow | Install LIBTIFF support for debian distros
   apt: name="{{ pillow_tiff_lib }}"
-  when: pillow_tiff
+  when: pillow_tiff and ansible_os_family == "Debian"
 
-- name: Pillow | Install FREETYPE2 support
+- name: Pillow | Install LIBTIFF support for redhat distros
+  yum: name="{{ pillow_tiff_lib }}"
+  when: pillow_tiff and ansible_os_family == "RedHat"
+
+- name: Pillow | Install FREETYPE2 support for debian distros
   apt: name="libfreetype6-dev"
-  when: pillow_freetype2
+  when: pillow_freetype2 and ansible_os_family == "Debian"
 
-- name: Pillow | Install LITTLECMS2
+- name: Pillow | Install FREETYPE2 support for redhat distros
+  yum: name="freetype-devel"
+  when: pillow_freetype2 and ansible_os_family == "RedHat"
+
+- name: Pillow | Install LITTLECMS2 for debian distros
   apt: name="liblcms2-dev"
-  when: pillow_littlecms2
+  when: pillow_littlecms2 and ansible_os_family == "Debian"
+
+- name: Pillow | Install LITTLECMS2 for redhat distros
+  yum: name="lcms2-devel"
+  when: pillow_littlecms2 and ansible_os_family == "RedHat"
 
 - include: webp.yml
   when: pillow_webp

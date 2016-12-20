@@ -1,8 +1,13 @@
 # vim: ft=ansible
 ---
 
-- name: Pillow | Install WEBP support
+- name: Pillow | Install WEBP support for debian distros
   apt: name="libwebp-dev"
+  when: ansible_os_family == "Debian"
+
+- name: Pillow | Install WEBP support for redhat distros
+  yum: name="libwebp-devel"
+  when: ansible_os_family == "RedHat"
 
 - name: Pillow | Install WEBP support | Download libwebp sources
   get_url: dest="/usr/src/libwebp-{{ libwebp_version }}.tar.gz" url="http://downloads.webmproject.org/releases/webp/libwebp-{{ libwebp_version }}.tar.gz"
